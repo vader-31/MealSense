@@ -1,20 +1,23 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="MealSense", layout="centered")
+st.title("MealSense Dashboard")
 
-st.title("🍽️ MealSense: Mid-Day Meal Intelligence System")
+df = pd.read_csv("midday_meal_cleaned.csv")
 
-st.write("Simple tool to estimate meal requirements")
+st.subheader("📊 Dataset Overview")
+st.write(df.head())
 
-attendance = st.number_input("Enter Attendance", min_value=0)
+st.subheader("📈 Key Metrics")
 
-if attendance > 0:
-    recommended = int(attendance * 1.05)
+st.metric("Avg Attendance", int(df["attendance"].mean()))
+st.metric("Avg Meals", int(df["meals_served"].mean()))
 
-    st.metric("Recommended Meals", recommended)
+st.subheader("🏫 School Analysis")
 
-    if attendance > 80:
-        st.warning("⚠️ High demand school")
-    else:
-        st.success("✅ Normal demand")
+school = st.selectbox("Select School", df["school_id"].unique())
+
+school_df = df[df["school_id"] == school]
+
+st.write("Avg Attendance:", int(school_df["attendance"].mean()))
+st.write("Avg Meals:", int(school_df["meals_served"].mean()))
